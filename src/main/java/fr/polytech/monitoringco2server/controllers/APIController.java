@@ -84,13 +84,17 @@ public class APIController {
 
 				if(type == 3){
 
-					return Mono.from(payloadDecoder.processDataPayload(decodedPayload, deviceId))
+					if(decodedPayload[0] == 0){
+						return Mono.just(new ResponseEntity<>("No messages in data payload", HttpStatus.ACCEPTED));
+					}
+
+					return payloadDecoder.processDataPayload(decodedPayload, deviceId)
 							.flatMap(success -> deviceRepository.findByDeviceIdIs(deviceId).flatMap(device -> {
 										if(device == null){
 											return Mono.just(new ResponseEntity<>("OK but device not registered in database !", HttpStatus.ACCEPTED));
 										}
 										device.setLastUpdate(LocalDateTime.now());
-										return deviceRepository.insert(device).flatMap(device1 -> Mono.just(new ResponseEntity<>("OK", HttpStatus.OK)))
+										return deviceRepository.save(device).flatMap(device1 -> Mono.just(new ResponseEntity<>("OK", HttpStatus.OK)))
 												.onErrorResume(throwable -> {
 													logger.warn("Error when trying update device lastUpdatedDate : ", throwable);
 													return Mono.just(new ResponseEntity<>("Internal server error !", HttpStatus.INTERNAL_SERVER_ERROR));
@@ -102,8 +106,8 @@ public class APIController {
 									})
 							.onErrorResume(throwable -> throwable instanceof Exception,
 									throwable -> {
-								logger.warn("Error when inserting data in InfluxDB for "+deviceId, throwable);
-								return Mono.just(new ResponseEntity<>("Error when inserting data in InfluxDB : "+throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+								logger.warn("Error when saving data in InfluxDB for "+deviceId, throwable);
+								return Mono.just(new ResponseEntity<>("Error when saving data in InfluxDB : "+throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
 							}));
 				}
 				else if(type == 255){

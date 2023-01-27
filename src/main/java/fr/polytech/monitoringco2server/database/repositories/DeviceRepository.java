@@ -18,5 +18,9 @@ public interface DeviceRepository extends ReactiveMongoRepository<Device, Object
 	@NotNull
 	Flux<Device> findAllByPublicDeviceIsTrue();
 
+	@NotNull
+	Mono<Device> findById(@NotNull ObjectId id);
+
+	@NotNull
 	Mono<Device> findByDeviceIdIs(String deviceId);
 }

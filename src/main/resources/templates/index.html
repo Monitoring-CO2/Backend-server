@@ -7,6 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="/css/style_map.css" />
 	<link rel="stylesheet" type="text/css" href="/css/common.css" />
 	<link rel="stylesheet" type="text/css" href="/css/map.css" />
+	<script src="/js/jquery-3.6.3.min.js"></script>
 	<script src="/js/map.js"></script>
 
 	<!-- Favicon -->
@@ -155,23 +156,15 @@
 
 				<div class="d-flex flex-column align-items-center pop_up_info">
 					<h1 id="selected_room" style="text-decoration: underline;"></h1>
-					<div id="info" class="align-self-start">
-						<h4>Dernière mesure :</h4>
-						<h4>Température :</h4>
-						<h4>Humidité :</h4>
-						<h4>Batterie :</h4>
-						<h4>CO2 :</h4>
+					<div id="selected_room_info" style="width: 100%">
 					</div>
-					<div>
-						<button type="button" class="btn btn-info" onclick="">Donnée</button>
-						<button type="button" class="btn btn-dark" onclick="pop_up_close()">Close</button>
+					<div class="m-3">
+						<a id="selected_room_access_data_button" class="btn btn-info">Accéder aux données</a>
+						<button type="button" class="btn btn-dark" onclick="pop_up_close()">Fermer</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<footer style="flex-shrink: 0;">
-		<!-- TODO : footer -->
-	</footer>
 </body>
 </html>

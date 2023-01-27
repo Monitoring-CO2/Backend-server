@@ -10,6 +10,7 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -21,13 +22,16 @@ public class PayloadDecoder {
 
 	final InfluxDBClientReactive influxDBClientReactive;
 
+	final DeviceRepository deviceRepository;
+
 	private static final Logger logger = LoggerFactory.getLogger("PayloadDecoder.java");
 
-	public PayloadDecoder(InfluxDBClientReactive influxDBClientReactive) {
+	public PayloadDecoder(InfluxDBClientReactive influxDBClientReactive, DeviceRepository deviceRepository) {
 		this.influxDBClientReactive = influxDBClientReactive;
+		this.deviceRepository = deviceRepository;
 	}
 
-	public Publisher<WriteReactiveApi.Success> processDataPayload(byte[] payload, String deviceId){
+	public Mono<WriteReactiveApi.Success> processDataPayload(byte[] payload, String deviceId){
 		int messageCount = payload[0];
 		float battery = 2.5F + ((float)payload[1])/10;
 
@@ -42,6 +46,8 @@ public class PayloadDecoder {
 		point.addTag("deviceId", deviceId);
 		point.addField("value", battery);
 		receivedData.add(point);
+
+		int co2 = 0;
 
 		for(int n = 0 ; n < messageCount && (8*n+9) < payload.length ; n ++){
 			long timestamp = ByteBuffer.wrap(payload, 8*n+2, 8).getLong() >> 32;
@@ -61,7 +67,7 @@ public class PayloadDecoder {
 			receivedData.add(point);
 
 
-			int co2 = (((payload[8*n+8] & 0x7F) << 4) | ((payload[8*n+9] & 0xF0) >> 4))*10;
+			co2 = (((payload[8*n+8] & 0x7F) << 4) | ((payload[8*n+9] & 0xF0) >> 4))*10;
 			point = new Point("co2");
 			point.time(timestamp, WritePrecision.S);
 			point.addTag("deviceId", deviceId);
@@ -78,6 +84,16 @@ public class PayloadDecoder {
 
 		Flowable<Point> pointFlowable = Flowable.fromIterable(receivedData);
 
-		return writeApi.writePoints(WritePrecision.S, pointFlowable);
+		if(co2 > 0){
+			int finalCo2 = co2;
+			return deviceRepository.findByDeviceIdIs(deviceId).flatMap(device -> {
+				device.setLastCo2Value(finalCo2);
+				return deviceRepository.save(device);
+			})
+			.onErrorComplete()
+			.then(Mono.from(writeApi.writePoints(WritePrecision.S, pointFlowable)));
+		}
+
+		return Mono.from(writeApi.writePoints(WritePrecision.S, pointFlowable));
 	}
 }

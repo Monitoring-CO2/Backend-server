@@ -78,7 +78,7 @@ public class Downlink {
 								return Mono.just(new ResponseEntity<>("OK but device not registered in database !", HttpStatus.ACCEPTED));
 							}
 							device.setLastUpdate(LocalDateTime.now());
-							return deviceRepository.insert(device).flatMap(device1 -> Mono.just(new ResponseEntity<>("OK", HttpStatus.OK)))
+							return deviceRepository.save(device).flatMap(device1 -> Mono.just(new ResponseEntity<>("OK", HttpStatus.OK)))
 									.onErrorResume(throwable -> {
 										logger.warn("Error when trying update device lastUpdatedDate : ", throwable);
 										return Mono.just(new ResponseEntity<>("Internal server error !", HttpStatus.INTERNAL_SERVER_ERROR));

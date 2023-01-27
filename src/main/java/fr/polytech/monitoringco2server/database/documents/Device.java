@@ -33,6 +33,7 @@ public class Device {
 	@NonNull
 	private LocalDateTime createDate = LocalDateTime.now();
 	private LocalDateTime lastUpdate = null;
+	private Integer lastCo2Value = null;
 
 	public Device(){};
 
@@ -45,7 +46,7 @@ public class Device {
 	}
 
 	@PersistenceCreator
-	public Device(@NonNull ObjectId id, String deviceId, String devEUI, String displayName, String room, boolean publicDevice, @NonNull LocalDateTime createDate, LocalDateTime lastUpdate) {
+	public Device(@NonNull ObjectId id, String deviceId, String devEUI, String displayName, String room, boolean publicDevice, @NonNull LocalDateTime createDate, LocalDateTime lastUpdate, Integer lastCo2Value) {
 		this.id = id;
 		this.deviceId = deviceId;
 		this.devEUI = devEUI;
@@ -54,6 +55,7 @@ public class Device {
 		this.publicDevice = publicDevice;
 		this.createDate = createDate;
 		this.lastUpdate = lastUpdate;
+		this.lastCo2Value = lastCo2Value;
 	}
 
 	public ObjectId getId() {
@@ -104,5 +106,13 @@ public class Device {
 	}
 	public LocalDateTime getLastUpdate() {
 		return lastUpdate;
+	}
+
+	public void setLastCo2Value(Integer lastCo2Value) {
+		this.lastCo2Value = lastCo2Value;
+	}
+
+	public Integer getLastCo2Value() {
+		return lastCo2Value;
 	}
 }
