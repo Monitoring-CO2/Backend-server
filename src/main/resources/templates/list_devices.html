@@ -68,7 +68,7 @@
 							<b><h4 class="card-header" th:text="${device.getDisplayName()}+' ('+${device.getRoom()}+')'"></h4></b>
 							<div class="card-body">
 								<h5 th:if="${device.getLastUpdate() == null}" class="card-title" th:text="'Mis à jour : jamais'"></h5>
-								<h5 th:if="${device.getLastUpdate() != null}" class="card-title" th:text="'Mis à jour : TODO'"></h5>
+								<h5 th:if="${device.getLastUpdate() != null}" class="card-title" th:text="'Mis à jour : '+${#temporals.format(device.getLastUpdate(), 'dd/MM/yyyy HH:mm')}"></h5>
 								<p th:text="'ID : '+${device.getDeviceId()}" class="mb-0"></p>
 								<p th:text="'DevEUI : '+${device.getDevEUI()}"></p>
 								<a th:href="'/devices/'+${device.getId()}" class="btn btn-info w-100">Accéder aux données</a>

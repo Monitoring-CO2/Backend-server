@@ -1,12 +1,13 @@
 package fr.polytech.monitoringco2server.config;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring6.ISpringWebFluxTemplateEngine;
 import org.thymeleaf.spring6.SpringWebFluxTemplateEngine;
@@ -21,7 +22,7 @@ public class WebConfig implements ApplicationContextAware, WebFluxConfigurer {
 	private ApplicationContext applicationContext;
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
@@ -41,6 +42,7 @@ public class WebConfig implements ApplicationContextAware, WebFluxConfigurer {
 	public ISpringWebFluxTemplateEngine thymeleafTemplateEngine() {
 		SpringWebFluxTemplateEngine templateEngine = new SpringWebFluxTemplateEngine();
 		templateEngine.addDialect(new SpringSecurityDialect());
+		templateEngine.addDialect(new Java8TimeDialect());
 		templateEngine.setTemplateResolver(thymeleafTemplateResolver());
 		return templateEngine;
 	}

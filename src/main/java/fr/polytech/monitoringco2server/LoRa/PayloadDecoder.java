@@ -6,7 +6,6 @@ import com.influxdb.client.reactive.WriteReactiveApi;
 import com.influxdb.client.write.Point;
 import fr.polytech.monitoringco2server.database.repositories.DeviceRepository;
 import io.reactivex.rxjava3.core.Flowable;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
