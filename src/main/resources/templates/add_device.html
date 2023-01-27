@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Monitoring CO2</title>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="/css/common.css"/>
+
+	<!-- Favicon -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+	<header>
+		<div id="title">
+			<a class="link" href="/"><img id="logo_principale" src="/img/logo_CO2_Monitoring.png" alt="Logo"/></a>
+			<a class="link" href="/">Monitoring CO2</a>
+		</div>
+
+		<div th:if="${#authentication != null}">
+			<div th:text="${#authentication.principal.getFullName()}"></div>
+			<div><a href="/logout">Se déconnecter</a></div>
+		</div>
+
+		<div>
+			<nav>
+				<ul id="nav_principale">
+					<li>
+						<a class="link" href="/" id="page_courante">Carte</a>
+					</li>
+					<li>
+						<a class="link" href="/devices">Appareils</a>
+					</li>
+
+					<li>
+						<a class="link" href="https://google.fr">Tracking</a>
+					</li>
+
+					<li>
+						<a class="link" href="/about">A propos</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="d-flex flex-column m-4" style="flex: 1 0 auto">
+		<div class="alert alert-danger" th:if="${databaseError != null}" th:text="'Erreur lors de l\'ajout de l\'appareil : '+${databaseError}"></div>
+		<div class="card w-100 mb-4" style="height: fit-content">
+			<h4 class="card-header"><b>Nouvel appareil</b></h4>
+			<div class="card-body">
+				<form action="#" th:action="@{/devices/add}" th:object="${device}" method="post">
+					<h5 class="card-title"><b>Informations</b></h5>
+					<div class="mb-3">
+						<label for="deviceName" class="form-label">Nom de l'appareil</label>
+						<input type="text" class="form-control" id="deviceName" th:field="*{displayName}">
+						<div class="alert alert-warning" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></div>
+					</div>
+					<div class="mb-3">
+						<label for="deviceRoom" class="form-label">Salle dans laquelle se situe l'appareil</label>
+						<select id="deviceRoom" class="form-select form-select-sm" aria-label=".form-select-lg example" th:field="*{room}">
+							<option value="" selected>Choisissez une salle</option>
+							<th:block th:each="room: ${rooms}">
+								<option th:text="${room}" th:value="${room}"></option>
+							</th:block>
+						</select>
+						<div class="alert alert-warning" th:if="${#fields.hasErrors('room')}" th:errors="*{room}"></div>
+					</div>
+					<h5 class="card-title"><b>LoRa</b></h5>
+					<div class="mb-3">
+						<label for="deviceId" class="form-label">ID de l'appareil</label>
+						<input type="text" class="form-control" id="deviceId" th:field="*{deviceId}">
+						<div class="alert alert-warning" th:if="${#fields.hasErrors('deviceId')}" th:errors="*{deviceId}"></div>
+					</div>
+					<div class="mb-3">
+						<label for="deviceEUI" class="form-label">DevEUI de l'appareil</label>
+						<input type="text" class="form-control" id="deviceEUI" th:field="*{devEUI}">
+						<div class="alert alert-warning" th:if="${#fields.hasErrors('devEUI')}" th:errors="*{devEUI}"></div>
+					</div>
+					<div class="form-check form-switch mb-4">
+						<input class="form-check-input" type="checkbox" role="switch" id="devicePublic" th:field="*{publicDevice}" checked>
+						<label class="form-check-label" for="devicePublic">Données publiques</label>
+					</div>
+					<button type="submit" class="btn btn-primary">Valider</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<footer style="flex-shrink: 0;">
+		<!-- TODO : footer -->
+	</footer>
+</body>
+</html>

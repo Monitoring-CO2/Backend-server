@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Monitoring CO2</title>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style_map.css" />
+	<link rel="stylesheet" type="text/css" href="/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="/css/map.css" />
+	<script src="/js/map.js"></script>
+
+	<!-- Favicon -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+	<header>
+		<div id="title">
+			<a class="link" href="/"><img id="logo_principale" src="/img/logo_CO2_Monitoring.png" alt="Logo"/></a>
+			<a class="link" href="/">Monitoring CO2</a>
+		</div>
+
+		<div th:if="${#authentication != null}">
+			<div th:text="${#authentication.principal.getFullName()}"></div>
+			<div><a href="/logout">Se déconnecter</a></div>
+		</div>
+
+		<div>
+			<nav>
+				<ul id="nav_principale">
+					<li>
+						<a class="link" href="/" id="page_courante">Carte</a>
+					</li>
+					<li>
+						<a class="link" href="/devices">Appareils</a>
+					</li>
+
+					<li>
+						<a class="link" href="https://google.fr">Tracking</a>
+					</li>
+
+					<li>
+						<a class="link" href="/about">A propos</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="d-flex justify-content-between align-items-center m-4" style="flex: 1 0 auto">
+		<!-- Indicator -->
+		<div class="device">
+			<div class="d-flex align-content-center ml-4 pl-5">
+				<img id="logo_emoji_happy" class="my-3 mr-2" width="70px" src="/img/happy.png" alt="Logo"/>
+				<h2 class="logo_text"><strong>0</strong></h2>
+			</div>
+
+			<div class="d-flex align-items-center ml-4 pl-5">
+				<img id="logo_emoji_angry" class="my-3 mr-2" width="70px" src="/img/neutral.png" alt="Logo"/>
+				<h2 class="logo_text"><strong>0</strong></h2>
+			</div>
+
+			<div class="d-flex align-items-center ml-4 pl-5">
+				<img id="logo_emoji_screaming" class="my-3 mr-2" width="70px" src="/img/screaming.png" alt="Logo"/>
+				<h2 class="logo_text"><strong>0</strong></h2>
+			</div>
+
+			<div class="d-flex align-items-center ml-4 pl-5">
+				<img id="logo_emoji_sleeping" class="my-3 mr-1" width="75px" src="/img/sleep.png" alt="Logo"/>
+				<h2 class="logo_text"><strong>0</strong></h2>
+			</div>
+		</div>
+
+		<!-- Map -->
+		<div id="map" class="d-flex justify-content-center">
+
+			<svg id="esclangon_floor_3" class="floor" viewBox="0 0 1400 600" shape-rendering="geometricPrecision">
+
+				<defs>
+					<filter id="blur">
+						<feGaussianBlur id="blur_level" in="SourceGraphic" stdDeviation="0" />
+					</filter>
+				</defs>
+				<!-- add class : room_co2_good room_co2_bad room_co2_neutral room_co2_sleep-->
+				<polygon filter="url(#blur)" class="groundfloor" points="64,11 328.75,11 328.75,231.65 637.6,231.65 633.1,258.05 955.15,288.94 1286.05,288.94 1286.05,588.95 505.15,505.1 215,505.1 215,452.15 64,452.15" alt="centree_et_echelle_fois_15"></polygon>
+				<polygon filter="url(#blur)" id="room_301" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="209.65,11 328.75,11 328.75,112.47 209.65,112.47"></polygon>
+				<polygon filter="url(#blur)" id="room_302" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="64,11 174.25,11 174.25,130.12 64,130.12"></polygon>
+				<polygon filter="url(#blur)" id="room_303" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="236.06,112.47 328.75,112.47 328.75,165.41 236.06,165.41"></polygon>
+				<polygon filter="url(#blur)" id="room_304" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="64,130.12 174.25,130.12 174.25,236 64,236"></polygon>
+				<polygon filter="url(#blur)" id="room_305" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="209.65,165.41 328.75,165.41 328.75,266.88 209.65,266.88"></polygon>
+				<polygon filter="url(#blur)" id="room_306" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="64,236 174.25,236 174.25,363.94 64,363.94"></polygon>
+				<polygon filter="url(#blur)" id="room_308" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="64,363.94 174.25,363.94 174.25,452.15 64,452.15"></polygon>
+				<polygon filter="url(#blur)" id="room_310" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="174.25,363.94 237.06,363.94 237.06,452.15 174.25,452.15"></polygon>
+				<polygon filter="url(#blur)" id="room_312" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="237.06,363.94 294.31,363.94 294.31,412.47 281.18,412.47 281.18,505.1 215,505.1 215,452.15 237.06,452.15"></polygon>
+				<polygon filter="url(#blur)" id="room_314" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="281.18,412.47 342.95,412.47 342.95,505.1 281.18,505.1"></polygon>
+				<polygon filter="url(#blur)" id="room_316" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="342.95,412.47 413.53,412.47 413.53,505.1 342.95,505.1"></polygon>
+				<polygon filter="url(#blur)" id="room_317" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="413.53,231.65 492.94,231.65 492.94,346.29 413.53,346.29"></polygon>
+				<polygon filter="url(#blur)" id="room_318" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="413.53,390.41 509.59,399.24 505.15,505.1 413.53,505.1"></polygon>
+				<polygon filter="url(#blur)" id="room_319" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="492.94,231.65 637.6,231.65 619.88,346.29 492.94,346.29"></polygon>
+				<polygon filter="url(#blur)" id="room_320" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="509.59,399.24 569.15,405.85 560.32,511.53 505.15,505.1"></polygon>
+				<polygon filter="url(#blur)" id="room_321" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="633.1,258.05 818.41,275.8 806.38,391.82 615.47,372.76"></polygon>
+				<polygon filter="url(#blur)" id="room_322" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="569.15,405.85 624.29,410.26 613.26,516.94 560.32,511.53"></polygon>
+				<polygon filter="url(#blur)" id="room_323" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="818.41,275.8 891.21,283.12 880.18,399.24 806.38,391.82"></polygon>
+				<polygon filter="url(#blur)" id="room_324" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="624.29,410.26 858.12,434.53 847.09,542.5 613.26,516.94"></polygon>
+				<polygon filter="url(#blur)" id="room_325" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="891.21,283.12 955.15,288.94 944.74,405.85 880.18,399.24"></polygon>
+				<polygon filter="url(#blur)" id="room_326" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="858.12,434.53 946.35,443.35 937.53,551.24 847.09,542.5"></polygon>
+				<polygon filter="url(#blur)" id="room_327" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="955.15,288.94 1055.44,288.94 1055.44,346.29 1048.82,416.88 944.74,405.85"></polygon>
+				<polygon filter="url(#blur)" id="room_328" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="946.35,443.35 1089.74,458.79 1080.41,567.47 937.53,551.24"></polygon>
+				<polygon filter="url(#blur)" id="room_330" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1089.74,458.79 1155.71,465.51 1147.06,574.38 1080.41,567.47"></polygon>
+				<polygon filter="url(#blur)" id="room_331" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1055.44,288.94 1103.97,288.94 1103.97,346.29 1055.44,346.29"></polygon>
+				<polygon filter="url(#blur)" id="room_332" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1155.71,465.51 1224.29,472.53 1216.26,581.8 1147.06,574.38"></polygon>
+				<polygon filter="url(#blur)" id="room_333" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1103.97,288.94 1216.47,288.94 1216.47,346.29 1103.97,346.29"></polygon>
+				<polygon filter="url(#blur)" id="room_334" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1224.29,472.53 1286.05,478.65 1286.05,588.95 1216.26,581.8"></polygon>
+				<polygon filter="url(#blur)" id="room_335" class="room" onclick="room_click(this)" onmouseover="room_hover(this)" points="1216.47,288.94 1286.06,288.94 1286.06,346.29 1216.47,346.29"></polygon>
+
+				<text id="room_text_301" class="room_text" x="269.2" y="61.7" onclick="room_click(this)">301</text>
+				<text id="room_text_302" class="room_text" x="119.1" y="70.6" onclick="room_click(this)">302</text>
+				<text id="room_text_303" class="room_text" x="282.4" y="145.1" onclick="room_click(this)">303</text>
+				<text id="room_text_304" class="room_text" x="119.1" y="183.1" onclick="room_click(this)">304</text>
+				<text id="room_text_305" class="room_text" x="269.2" y="216.1" onclick="room_click(this)">305</text>
+				<text id="room_text_306" class="room_text" x="119.1" y="300" onclick="room_click(this)">306</text>
+				<text id="room_text_308" class="room_text" x="119.1" y="408" onclick="room_click(this)">308</text>
+				<text id="room_text_310" class="room_text" x="205.7" y="408" onclick="room_click(this)">310</text>
+				<text id="room_text_312" class="room_text" x="256.9" y="433.4" onclick="room_click(this)">312</text>
+				<text id="room_text_314" class="room_text" x="312.1" y="458.8" onclick="room_click(this)">314</text>
+				<text id="room_text_316" class="room_text" x="378.2" y="458.8" onclick="room_click(this)">316</text>
+				<text id="room_text_317" class="room_text" x="454.2" y="289.0" onclick="room_click(this)">317</text>
+				<text id="room_text_318" class="room_text" x="460.4" y="450" onclick="room_click(this)">318</text>
+				<text id="room_text_319" class="room_text" x="560.8" y="289"  onclick="room_click(this)">319</text>
+				<text id="room_text_320" class="room_text" x="536.1" y="455.4" onclick="room_click(this)">320</text>
+				<text id="room_text_321" class="room_text" x="718.3" y="324.6" onclick="room_click(this)">321</text>
+				<text id="room_text_322" class="room_text" x="591.8" y="461.1" onclick="room_click(this)">322</text>
+				<text id="room_text_323" class="room_text" x="849" y="337.5" onclick="room_click(this)">323</text>
+				<text id="room_text_324" class="room_text" x="735.7" y="476.1" onclick="room_click(this)">324</text>
+				<text id="room_text_325" class="room_text" x="917.8" y="344.3" onclick="room_click(this)">325</text>
+				<text id="room_text_326" class="room_text" x="897.3" y="492.9" onclick="room_click(this)">326</text>
+				<text id="room_text_327" class="room_text" x="1011.9" y="349.4" onclick="room_click(this)">327</text>
+				<text id="room_text_328" class="room_text" x="1013.5" y="505.2" onclick="room_click(this)">328</text>
+				<text id="room_text_330" class="room_text" x="1118.2" y="516.5" onclick="room_click(this)">330</text>
+				<text id="room_text_331" class="room_text" x="1079.7" y="319.6" onclick="room_click(this)">331</text>
+				<text id="room_text_332" class="room_text" x="1185.8" y="523.6" onclick="room_click(this)">332</text>
+				<text id="room_text_333" class="room_text" x="1160.2" y="319.6" onclick="room_click(this)">333</text>
+				<text id="room_text_334" class="room_text" x="1253.2" y="530.5" onclick="room_click(this)">334</text>
+				<text id="room_text_335" class="room_text" x="1251.3" y="319.6" onclick="room_click(this)">335</text>
+			</svg>
+
+			<div id="pop_up">
+				<div class="blocker" onclick="pop_up_close()"></div>
+
+				<div class="d-flex flex-column align-items-center pop_up_info">
+					<h1 id="selected_room" style="text-decoration: underline;"></h1>
+					<div id="info" class="align-self-start">
+						<h4>Dernière mesure :</h4>
+						<h4>Température :</h4>
+						<h4>Humidité :</h4>
+						<h4>Batterie :</h4>
+						<h4>CO2 :</h4>
+					</div>
+					<div>
+						<button type="button" class="btn btn-info" onclick="">Donnée</button>
+						<button type="button" class="btn btn-dark" onclick="pop_up_close()">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer style="flex-shrink: 0;">
+		<!-- TODO : footer -->
+	</footer>
+</body>
+</html>

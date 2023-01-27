@@ -1,0 +1,105 @@
+html{
+    font-family: "Arial", "serif";
+    background-color: #f0f0f0; /*8b8bdd83*/
+    height: 100%;
+    cursor: default;
+    font-weight: 500;
+
+    min-width: 900px;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    font-family: 'Avenir Next', Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #515158;
+    background: #f0f0f0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+header{
+    width: 100%;
+    /* color: #050505; */
+    color: white;
+    padding : 1vh 7vh 1vh 7vh;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: #c0dafc;
+    border-bottom: 5px solid #55507e;
+    
+}
+
+ul{
+    margin: 0px;
+}
+
+#title{
+    font-size: 150%;
+
+    display: flex;
+    align-items: center;
+
+    white-space: nowrap;
+}
+
+#logo_principale{
+    width: 48px;
+}
+
+.link{
+    color: black;
+
+    margin-right: 25px;
+    text-decoration: none;
+}
+
+#nav_principale{
+    font-size: 150%;
+    
+    display: flex;
+    justify-content: space-around;
+	align-items: center;
+    
+    text-decoration: none;
+    list-style-type: none;
+    white-space: nowrap;
+
+    position: relative;
+}
+
+.logo_text{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 16px;
+}
+
+@media screen and (max-width: 1050px)
+{
+    #title{
+        display: none;
+    }
+}
+
+.transparent{
+    color: transparent;
+}
+
+.border_red{
+	border: 3px solid red;
+}
+
+.border_purple{
+	border: 3px solid purple;
+}
+
+.border_green{
+	border: 3px solid green;
+}
+

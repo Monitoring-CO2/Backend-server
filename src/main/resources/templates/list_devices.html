@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Monitoring CO2</title>
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="/css/common.css" />
+
+	<!-- Favicon -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+	<header>
+		<div id="title">
+			<a class="link" href="/"><img id="logo_principale" src="/img/logo_CO2_Monitoring.png" alt="Logo"/></a>
+			<a class="link" href="/">Monitoring CO2</a>
+		</div>
+
+		<div th:if="${#authentication != null}">
+			<div th:text="${#authentication.principal.getFullName()}"></div>
+			<div><a href="/logout">Se déconnecter</a></div>
+		</div>
+
+		<div>
+			<nav>
+				<ul id="nav_principale">
+					<li>
+						<a class="link" href="/" id="page_courante">Carte</a>
+					</li>
+					<li>
+						<a class="link" href="/devices">Appareils</a>
+					</li>
+
+					<li>
+						<a class="link" href="https://google.fr">Tracking</a>
+					</li>
+
+					<li>
+						<a class="link" href="/about">A propos</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+
+	<div class="d-flex flex-column m-4" style="flex: 1 0 auto">
+		<div class="alert alert-success" th:if="${device != null}">Appareil ajouté avec succès !</div>
+		<div class="container">
+			<div class="row row-cols-3">
+				<div class="col">
+					<div class="card mb-3 h-100">
+						<h4 class="card-header text-white bg-primary text-center">Nouvel appareil</h4>
+						<div class="card-body h-100 d-flex flex-column justify-content-center">
+							<a class="btn btn-lg btn-primary m-4 pt-2" href="/devices/add">Ajouter un nouvel appareil</a>
+						</div>
+					</div>
+				</div>
+				<th:block th:if="${devices != null}" th:each="device : ${devices}">
+					<div class="col">
+						<div class="card">
+							<b><h4 class="card-header" th:text="${device.getDisplayName()}+' ('+${device.getRoom()}+')'"></h4></b>
+							<div class="card-body">
+								<h5 th:if="${device.getLastUpdate() == null}" class="card-title" th:text="'Mis à jour : jamais'"></h5>
+								<h5 th:if="${device.getLastUpdate() != null}" class="card-title" th:text="'Mis à jour : TODO'"></h5>
+								<p th:text="'ID : '+${device.getDeviceId()}" class="mb-0"></p>
+								<p th:text="'DevEUI : '+${device.getDevEUI()}"></p>
+								<a th:href="'/devices/'+${device.getId()}" class="btn btn-info w-100">Accéder aux données</a>
+							</div>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</div>
+	<footer style="flex-shrink: 0;">
+		<!-- TODO : footer -->
+	</footer>
+</body>
+</html>

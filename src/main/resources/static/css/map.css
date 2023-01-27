@@ -1,0 +1,115 @@
+.groundfloor{
+	fill: #d7d7dc;
+	stroke: #414141;
+	stroke-width: 16;
+
+	filter: drop-shadow(-25px 40px 10px rgb(0 0 0 / 0.4));
+	-webkit-transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+#map{
+	width: 100%;
+	display: flex;
+
+	position: relative;
+	resize: both;
+}
+
+#esclangon_floor_3{
+	max-width: 100%
+}
+
+.floor{
+	width: 1400px;
+	height: 600px;
+}
+
+.room{
+	fill: #bdbdbd;
+	stroke: #797979;
+	stroke-width: 3;
+
+	-webkit-transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+
+	cursor: pointer;
+}
+
+.room:hover{
+	stroke: rgb(162, 121, 196);
+	stroke-width: 5;
+	transition: all 0.3s ease-in-out;
+}
+
+.room_text{
+	font-size: 20px;
+	text-anchor: middle;
+	cursor: pointer;
+}
+
+.room_co2_good{
+	fill: #27e460;
+	stroke: #2d6616;
+}
+
+.room_co2_bad{
+	fill: #ee3535;
+	stroke: #661616;
+}
+
+.room_co2_neutral{
+	fill: #eea435;
+	stroke: #665316;
+}
+
+.room_co2_sleep{
+	fill: #3193cc;
+	stroke: #0d6568;
+}
+
+.room_text{
+	-webkit-transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	transform: rotateX(40deg) rotateZ(-20deg) translateX(-7vmin) translateZ(-20vmin) translateY(10vmin);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+#pop_up{
+	display: none;
+}
+
+#info{
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+	background-color: #00000023;
+}
+
+.pop_up_info{
+	width: 500px;
+	align-self: center;
+
+	position: fixed;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -60%);
+
+	background-color:#ffffff;
+	border: 3px solid black;
+	border-radius: 5px;
+
+	padding: 5px 15px 5px 15px;
+}
