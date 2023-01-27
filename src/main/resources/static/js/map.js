@@ -25,8 +25,6 @@ function room_click(self){
 		return;
 	}
 
-	let devicesInRoom = devicesPerRoom[room_nb];
-
 	loadRoom(room_nb);
 	document.getElementById("pop_up").style.display = "inline";
 	document.getElementById("selected_room").innerHTML = room_nb;
@@ -46,14 +44,23 @@ function getDevices(){
 				devicesPerRoom[room] = [];
 			}
 			devicesPerRoom[room].push(device);
-			if(device["lastUpdated"] === "null" || device["lastCo2Value"] === "null"){
-				let map_room = document.getElementById("room_"+room);
-				if(map_room != null){
+			let map_room = document.getElementById("room_"+room);
+			if(map_room != null) {
+				if (device["lastUpdated"] === "null" || device["lastCo2Value"] === "null"
+					|| (new Date()) - (new Date(device["lastUpdated"])) > 24 * 60 * 60 * 1000) {
+
 					map_room.classList.add("room_co2_sleep");
+
+				} else {
+					let co2Val = device["lastCo2Value"];
+					if (co2Val <= 1000) {
+						map_room.classList.add("room_co2_good")
+					} else if (co2Val <= 1500) {
+						map_room.classList.add("room_co2_neutral")
+					} else {
+						map_room.classList.add("room_co2_bad")
+					}
 				}
-			}
-			else{
-				//TODO : color based on CO2
 			}
 		});
 	});
