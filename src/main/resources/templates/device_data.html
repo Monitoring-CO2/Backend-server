@@ -50,34 +50,10 @@
 		</div>
 	</header>
 
-	<div class="d-flex flex-column m-4" style="flex: 1 0 auto">
-		<div class="alert alert-success" th:if="${device != null}">Appareil ajouté avec succès !</div>
-		<div class="container">
-			<div class="row row-cols-3">
-				<div class="col">
-					<div class="card mb-3 h-100">
-						<h4 class="card-header text-white bg-primary text-center">Nouvel appareil</h4>
-						<div class="card-body h-100 d-flex flex-column justify-content-center">
-							<a class="btn btn-lg btn-primary m-4 pt-2" href="/devices/add">Ajouter un nouvel appareil</a>
-						</div>
-					</div>
-				</div>
-				<th:block th:if="${devices != null}" th:each="device : ${devices}">
-					<div class="col">
-						<div class="card">
-							<b><h4 class="card-header" th:text="${device.getDisplayName()}+' ('+${device.getRoom()}+')'"></h4></b>
-							<div class="card-body">
-								<h5 th:if="${device.getLastUpdate() == null}" class="card-title" th:text="'Mis à jour : jamais'"></h5>
-								<h5 th:if="${device.getLastUpdate() != null}" class="card-title" th:text="'Mis à jour : '+${#temporals.format(device.getLastUpdate(), 'dd/MM/yyyy HH:mm')}"></h5>
-								<p th:text="'ID : '+${device.getDeviceId()}" class="mb-0"></p>
-								<p th:if="${#authentication != null}" th:text="'DevEUI : '+${device.getDevEUI()}"></p>
-								<a th:href="'/devices/'+${device.getId()}+'/data'" class="btn btn-info w-100">Accéder aux données</a>
-							</div>
-						</div>
-					</div>
-				</th:block>
-			</div>
-		</div>
-	</div>
+	<iframe id="iframe_grafana"
+			width="100%"
+			height="100%"
+			style="height:100%;width:100%"
+			th:src="'http://51.38.237.54:8091/d/RBjY4G04z/monitoring-co2?orgId=1&theme=light&var-deviceId='+${device.getDeviceId()}"></iframe>
 </body>
 </html>

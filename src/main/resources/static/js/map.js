@@ -85,7 +85,7 @@ function loadRoom(room){
 	selectedRoomInfo.innerHTML = "<div class=\"spinner-border text-primary m-4\" role=\"status\"></div>";
 	selectedRoomInfo.className = "w-100 d-flex justify-content-center";
 	let accessDataButton = document.getElementById("selected_room_access_data_button");
-	accessDataButton.href = "/devices/"+devicesPerRoom[room][0]["id"];
+	accessDataButton.href = "/devices/"+devicesPerRoom[room][0]["id"]+'/data';
 
 	let generateForm = function(labelText, value) {
 		let formGroupDiv = document.createElement("div");
