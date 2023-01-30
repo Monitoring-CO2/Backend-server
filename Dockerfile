@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:jdk
 
 WORKDIR /usr/app
 
