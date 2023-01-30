@@ -41,5 +41,5 @@ jobs:
 
     - name: Build the docker Docker image
       run: |
-        docker buildx build --platform=linux/amd64,linux/arm64 . --tag ghcr.io/monitoring-co2/backend-server:latest
-        docker push ghcr.io/monitoring-co2/backend-server:latest
+        docker buildx build --platform=linux/amd64,linux/arm64 . --tag [ghcr.io/monitoring-co2/backend-server]:latest
+        docker push [ghcr.io/monitoring-co2/backend-server]:latest
