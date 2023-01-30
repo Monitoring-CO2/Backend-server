@@ -1,5 +1,5 @@
-var devices = [];
-var devicesPerRoom = {};
+let devices = [];
+let devicesPerRoom = {};
 
 function room_hover(self){
 	// Put the element in foreground
@@ -38,6 +38,11 @@ function getDevices(){
 	$.getJSON("/webapi/devices", function(result){
 		devices = result;
 		devicesPerRoom = {};
+		let co2_low = 0;
+		let co2_mid = 0;
+		let co2_high = 0;
+		let co2_sleep = 0;
+
 		devices.forEach(device => {
 			let room = device["room"];
 			if(!(room in devicesPerRoom)){
@@ -50,25 +55,35 @@ function getDevices(){
 					|| (new Date()) - (new Date(device["lastUpdated"])) > 24 * 60 * 60 * 1000) {
 
 					map_room.classList.add("room_co2_sleep");
+					co2_sleep++;
 
 				} else {
 					let co2Val = device["lastCo2Value"];
 					if (co2Val <= 1000) {
-						map_room.classList.add("room_co2_good")
+						map_room.classList.add("room_co2_good");
+						co2_low++;
 					} else if (co2Val <= 1500) {
-						map_room.classList.add("room_co2_neutral")
+						map_room.classList.add("room_co2_neutral");
+						co2_mid++;
 					} else {
-						map_room.classList.add("room_co2_bad")
+						map_room.classList.add("room_co2_bad");
+						co2_high++;
 					}
 				}
 			}
 		});
+
+		document.getElementById("text-devices-low-co2").innerText = co2_low.toString();
+		document.getElementById("text-devices-mid-co2").innerText = co2_mid.toString();
+		document.getElementById("text-devices-high-co2").innerText = co2_high.toString();
+		document.getElementById("text-devices-sleep").innerText = co2_sleep.toString();
 	});
 }
 
 function loadRoom(room){
 	let selectedRoomInfo = document.getElementById("selected_room_info");
 	selectedRoomInfo.innerHTML = "<div class=\"spinner-border text-primary m-4\" role=\"status\"></div>";
+	selectedRoomInfo.className = "w-100 d-flex justify-content-center";
 	let accessDataButton = document.getElementById("selected_room_access_data_button");
 	accessDataButton.href = "/devices/"+devicesPerRoom[room][0]["id"];
 
@@ -96,6 +111,7 @@ function loadRoom(room){
 	$.getJSON("/webapi/device/"+devicesPerRoom[room][0]["id"]+"/lastValues", function (deviceLastValues) {
 		console.log(deviceLastValues);
 		selectedRoomInfo.innerHTML = "";
+		selectedRoomInfo.className = "w-100";
 
 		let date = new Date(deviceLastValues["timestamp"]);
 		let formGroupDiv = generateForm("Dernière mise à jour", date.toLocaleString());
