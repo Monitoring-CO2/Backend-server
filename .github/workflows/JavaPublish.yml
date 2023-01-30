@@ -41,5 +41,5 @@ jobs:
 
     - name: Build the docker Docker image
       run: |
-        docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        docker build . --tag ghcr.io/monitoring-co2/backend-server:latest
+        docker push ghcr.io/monitoring-co2/backend-server:latest
