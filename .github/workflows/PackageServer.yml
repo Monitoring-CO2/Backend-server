@@ -1,0 +1,29 @@
+name: Build and Package Monitoring CO2 Server
+
+on:
+  push:
+    #branches:
+     # - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Publish JAR to Github Packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: Monitoring-CO2-server.jar
+          path: build/libs/Monitoring-CO2-server.jar
