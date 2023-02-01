@@ -32,7 +32,7 @@ public class PayloadDecoder {
 
 	public Mono<WriteReactiveApi.Success> processDataPayload(byte[] payload, String deviceId){
 		int messageCount = payload[0];
-		float battery = 2.5F + ((float)payload[1])/10;
+		float battery = 2.5F + ((float)payload[1])/100;
 
 		logger.debug("Received "+messageCount+" message(s) from "+deviceId);
 
