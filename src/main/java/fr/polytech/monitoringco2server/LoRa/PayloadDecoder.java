@@ -51,14 +51,14 @@ public class PayloadDecoder {
 		for(int n = 0 ; n < messageCount && (8*n+9) < payload.length ; n ++){
 			long timestamp = ByteBuffer.wrap(payload, 8*n+2, 8).getLong() >> 32;
 
-			float temperature = (((payload[8*n+6] << 2) | ((payload[8*n+7] & 0xC0) >> 6)) / 10F) - 25;
+			float temperature = ((float)((Byte.toUnsignedInt(payload[8*n+6]) << 2) | ((Byte.toUnsignedInt(payload[8*n+7]) & 0xC0) >> 6)) / 10F) - 25;
 			point = new Point("temperature");
 			point.time(timestamp, WritePrecision.S);
 			point.addTag("deviceId", deviceId);
 			point.addField("value", temperature);
 			receivedData.add(point);
 
-			int humidite = ((payload[8*n+7] & 0x3F) << 1) | ((payload[8*n+8] & 0x80) >> 7);
+			int humidite = ((Byte.toUnsignedInt(payload[8*n+7]) & 0x3F) << 1) | ((Byte.toUnsignedInt(payload[8*n+8]) & 0x80) >> 7);
 			point = new Point("humidite");
 			point.time(timestamp, WritePrecision.S);
 			point.addTag("deviceId", deviceId);
@@ -66,14 +66,14 @@ public class PayloadDecoder {
 			receivedData.add(point);
 
 
-			co2 = (((payload[8*n+8] & 0x7F) << 4) | ((payload[8*n+9] & 0xF0) >> 4))*10;
+			co2 = (((Byte.toUnsignedInt(payload[8*n+8]) & 0x7F) << 4) | ((Byte.toUnsignedInt(payload[8*n+9]) & 0xF0) >> 4))*10;
 			point = new Point("co2");
 			point.time(timestamp, WritePrecision.S);
 			point.addTag("deviceId", deviceId);
 			point.addField("value", co2);
 			receivedData.add(point);
 
-			int mouvement = payload[8*n+9] & 0x0F;
+			int mouvement = Byte.toUnsignedInt(payload[8*n+9]) & 0x0F;
 			point = new Point("mouvement");
 			point.time(timestamp, WritePrecision.S);
 			point.addTag("deviceId", deviceId);
