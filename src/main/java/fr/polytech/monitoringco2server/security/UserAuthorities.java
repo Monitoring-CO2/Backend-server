@@ -4,6 +4,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum UserAuthorities {
 	ADD_DEVICE("ADD_DEVICE"),
+	REMOVE_DEVICE("REMOVE_DEVICE"),
 	VIEW_DEVICE_DATA("VIEW_DEVICE_DATA");
 
 	public final SimpleGrantedAuthority authority;

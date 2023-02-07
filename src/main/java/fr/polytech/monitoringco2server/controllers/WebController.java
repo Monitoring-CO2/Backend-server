@@ -111,4 +111,18 @@ public class WebController {
 			return "device_data.html";
 		}));
 	}
+
+	@GetMapping("/devices/{id}/delete")
+	public Mono<String> deviceDelete(@PathVariable String id, Model map){
+		ObjectId deviceId;
+		try{
+			deviceId = new ObjectId(id);
+		}
+		catch (IllegalArgumentException e){
+			map.addAttribute("error", "Bad ID !");
+			return Mono.just("list_devices.html");
+		}
+
+		return deviceRepository.deleteById(deviceId).thenReturn("redirect:/devices");
+	}
 }

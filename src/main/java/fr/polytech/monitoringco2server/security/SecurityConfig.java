@@ -20,6 +20,7 @@ public class SecurityConfig {
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http){
 		return http.authorizeExchange()
 				.pathMatchers("/devices/add").hasAuthority(UserAuthorities.ADD_DEVICE.toString())
+				.pathMatchers("/devices/*/delete").hasAuthority(UserAuthorities.REMOVE_DEVICE.toString())
 				.pathMatchers("/**").permitAll()
 				.anyExchange().authenticated()
 				.and().csrf().requireCsrfProtectionMatcher(new ServerWebExchangeMatcher() {

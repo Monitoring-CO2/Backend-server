@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum UserRoles {
-	ADMINISTRATEUR(List.of(UserAuthorities.ADD_DEVICE));
+	ADMINISTRATEUR(List.of(UserAuthorities.ADD_DEVICE, UserAuthorities.REMOVE_DEVICE));
 
 	public final Collection<UserAuthorities> authorities;
 	UserRoles(Collection<UserAuthorities> authorities){
