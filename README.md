@@ -82,6 +82,8 @@ Please complete every line after the `=` sign (except the MongoDB username and p
 - **influxdb.org** : Name of the InfluxDB database organisation
 - **influxdb.url** : Address of the InfluxDB database
 
+If you're going to deploy the server with Docker, please check the [specific configuration](https://github.com/Monitoring-CO2/Server-Docker#docker-compose-applicationproperties).
+
 ## Building the server
 
 In order to build the server, make sure you have installed the JDK version 17.
