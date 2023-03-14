@@ -17,14 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
+import java.time.Instant;
+import java.util.*;
 
 @RestController
 @RequestMapping("/webapi")
@@ -104,7 +102,7 @@ public class WebAPIController {
 				return Mono.just(new ResponseEntity<>("This device is private !", HttpStatus.UNAUTHORIZED));
 			}
 			QueryReactiveApi queryApi = influxDBClientReactive.getQueryReactiveApi();
-			String flux = "from(bucket: \"Monitoring CO2 Data\") |> range(start:0) |> filter(fn: (r) => r[\"_measurement\"] == \"co2\" or r[\"_measurement\"] == \"temperature\" or r[\"_measurement\"] == \"humidite\" or r[\"_measurement\"] == \"batterie\") |> filter(fn: (r) => r[\"_field\"] == \"value\") |> filter(fn: (r) => r[\"deviceId\"] == \""+device.getDeviceId()+"\") |> last()";
+			String flux = "from(bucket: \"Monitoring CO2 Data\") |> range(start:0) |> filter(fn: (r) => r[\"_measurement\"] == \"co2\" or r[\"_measurement\"] == \"temperature\" or r[\"_measurement\"] == \"humidite\" or r[\"_measurement\"] == \"batterie\" or r[\"_measurement\"] == \"mouvement\") |> filter(fn: (r) => r[\"_field\"] == \"value\") |> filter(fn: (r) => r[\"deviceId\"] == \""+device.getDeviceId()+"\") |> last()";
 
 			return Flux.from(queryApi.query(flux)).collectList().flatMap(fluxRecords -> {
 				if(fluxRecords.size() == 0){
@@ -128,6 +126,93 @@ public class WebAPIController {
 					}
 				}
 				rootNode.put("timestamp", Objects.requireNonNull(fluxRecords.get(0).getTime()).toString());
+				String jsonStr;
+				try{
+					jsonStr = mapper.writer().writeValueAsString(rootNode);
+				} catch (JsonProcessingException e) {
+					logger.warn("Error generating device values JSON !", e);
+					return Mono.just(new ResponseEntity<>("Internal JSON error !", HttpStatus.INTERNAL_SERVER_ERROR));
+				}
+
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				return Mono.just(new ResponseEntity<>(jsonStr, headers, HttpStatus.OK));
+			});
+
+		}).switchIfEmpty(Mono.just(new ResponseEntity<>("Unknown device !", HttpStatus.BAD_REQUEST)));
+	}
+
+	@GetMapping("/device/{id}/values")
+	public Mono<ResponseEntity<String>> getDeviceValues(@RequestParam("days") Optional<Integer> days, @RequestParam("hours") Optional<Integer> hours, @PathVariable String id, Authentication authentication){
+		String filterStr;
+		if(days.isPresent()){
+			int daysInt = days.get();
+			if (daysInt > 7){
+				daysInt = 7;
+			}
+			else if(daysInt < 1){
+				daysInt = 1;
+			}
+			filterStr = daysInt +"d";
+		}
+		else if(hours.isPresent()){
+			int hoursInt = hours.get();
+			if (hoursInt > 7*24){
+				hoursInt = 7;
+			}
+			else if(hoursInt < 1){
+				hoursInt = 1;
+			}
+			filterStr = hoursInt +"h";
+		} else {
+			filterStr = "4h";
+		}
+
+		ObjectId deviceDbId;
+		try{
+			deviceDbId = new ObjectId(id);
+		}
+		catch (IllegalArgumentException e){
+			return Mono.just(new ResponseEntity<>("Bad ID !", HttpStatus.BAD_REQUEST));
+		}
+
+		return deviceRepository.findById(deviceDbId).flatMap(device -> {
+			if(!device.isPublicDevice() && authentication == null){
+				return Mono.just(new ResponseEntity<>("This device is private !", HttpStatus.UNAUTHORIZED));
+			}
+			QueryReactiveApi queryApi = influxDBClientReactive.getQueryReactiveApi();
+			String flux = "from(bucket: \"Monitoring CO2 Data\") |> range(start: -"+filterStr+") |> filter(fn: (r) => r[\"_measurement\"] == \"co2\" or r[\"_measurement\"] == \"temperature\" or r[\"_measurement\"] == \"humidite\" or r[\"_measurement\"] == \"batterie\" or r[\"_measurement\"] == \"mouvement\") |> filter(fn: (r) => r[\"_field\"] == \"value\") |> filter(fn: (r) => r[\"deviceId\"] == \""+device.getDeviceId()+"\")";
+
+			return Flux.from(queryApi.query(flux)).collectList().flatMap(fluxRecords -> {
+				if(fluxRecords.size() == 0){
+					return Mono.just(new ResponseEntity<>("No data", HttpStatus.NOT_FOUND));
+				}
+
+				ObjectMapper mapper = new ObjectMapper();
+				ArrayNode rootNode = mapper.createArrayNode();
+
+				HashMap<Instant, ObjectNode> hashMap = new HashMap<>();
+
+				for (FluxRecord fluxRecord: fluxRecords) {
+					ObjectNode currentNode = hashMap.getOrDefault(fluxRecord.getTime(), mapper.createObjectNode());
+					if (fluxRecord.getValue() instanceof Double) {
+						currentNode.put(fluxRecord.getMeasurement(), (Double) fluxRecord.getValue());
+					} else if (fluxRecord.getValue() instanceof Integer) {
+						currentNode.put(fluxRecord.getMeasurement(), (Integer) fluxRecord.getValue());
+					} else if (fluxRecord.getValue() instanceof Long) {
+						currentNode.put(fluxRecord.getMeasurement(), (Long) fluxRecord.getValue());
+					} else if (fluxRecord.getValue() != null) {
+						currentNode.put(fluxRecord.getMeasurement(), fluxRecord.getValue().toString());
+					}
+					hashMap.put(fluxRecord.getTime(), currentNode);
+				}
+
+				for(Map.Entry<Instant, ObjectNode> entry : hashMap.entrySet()){
+					ObjectNode currentNode = entry.getValue();
+					currentNode.put("timestamp", entry.getKey().toString());
+					rootNode.add(currentNode);
+				}
+
 				String jsonStr;
 				try{
 					jsonStr = mapper.writer().writeValueAsString(rootNode);
